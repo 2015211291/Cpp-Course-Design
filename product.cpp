@@ -1,6 +1,14 @@
 #include "product.h"
 using namespace std;
 
+
+int delete_index;
+int discount_flag = 0;
+int full_off_flag_all = 0;
+int full_off_flag_food = 0;
+int full_off_flag_book = 0;
+int full_off_flag_clothing = 0;
+
 /*构造函数*/
 Product::Product()
 {
@@ -139,7 +147,7 @@ void Product::modif_discount_price(string s)
 }
 
 
-/*根据原价和折扣系数和满减修改折扣后的价格*/
+/*根据原价和折扣系数修改价格*/
 void Product::modify_discount_price()
 {
 	double price_temp = atof(price.c_str());
@@ -148,11 +156,6 @@ void Product::modify_discount_price()
 
 	discount_price = to_string(discount_price_temp);
 	
-	if(full_off_flag == 1)// 有满减活动
-	{
-		if(atof(discount_price.c_str()) >= all_full)// 打完折后的钱达到满减的金额
-			discount_price = to_string(atof(discount_price.c_str()) - all_off);
-	}
 }
 
 
@@ -216,11 +219,11 @@ void Product::input_discount()
 	string temp_s;
 	double temp_b;
 	
-	cout << "请输入折扣系数：(0<系数<1)" << endl;
+	cout << "请输入折扣系数：(0<系数<=1)" << endl;
 	cin >> temp_s;
 	temp_b = atof(temp_s.c_str());
 
-	while((temp_b>=1) || (temp_b<=0))
+	while((temp_b>1) || (temp_b<=0))
 	{
 		cout << "折扣系数输入不合法！请重新输入：" << endl;
 		cin >> temp_s;
@@ -299,21 +302,26 @@ void Product::alter()
 
 			case 1:
 				input_num();
+                cout << "修改成功!" << endl;
 				break;
 
 			case 2:
 				input_price();
+                cout << "修改成功!" << endl;
 				break;
 
 			case 3:
 				input_discount();
+                cout << "修改成功!" << endl;
 				break;
 
 			case 4:
 				input_description();
+                cout << "修改成功!" << endl;
 				break;
 
 			default:
+                cout << "请输入正确的代号！" << endl;
 				break;
 		}
 
@@ -322,12 +330,24 @@ void Product::alter()
 }
 
 
-// 显示商品信息
+/*显示商品信息*/
 void Product::show()
 {
-	cout << "产品ID：" << endl;
+	cout << "产品ID：" <<  ID << endl;
 	cout << "产品名称：" << name << endl;
 	cout << "数量：" << num << endl;
 	cout << "原价：" << price << endl;
 	cout << "现价：" << discount_price << endl;
 }
+
+
+/*显示订单中商品的信息，即仅改变数量*/
+void Product::show_order(int n)
+{
+	cout << "产品ID：" <<  ID << endl;
+	cout << "产品名称：" << name << endl;
+	cout << "数量：" << n << endl;
+	cout << "原价：" << price << endl;
+	cout << "现价：" << discount_price << endl;
+}
+

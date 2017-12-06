@@ -10,7 +10,7 @@ using namespace std;
 /*单类商品的订单*/
 struct Order
 {
-	int category;// 1,food;2,book;3,clothing
+	int category;// 0,food;1,book;2,clothing
 	int ID;// 产品唯一标识
 	int num;// 购买数量
 	double price;// 购买的实际总价格
@@ -75,15 +75,18 @@ const int book_off = 100;
 const int clothing_full= 300;
 const int clothing_off = 100;
 
-/*满减标志，0代表无满减，1代表全场，2代表食品，以此类推*/
-int full_off_flag = 0;
+/*满减标志，0代表无满减，1代表有满减*/
+extern int full_off_flag_all ;
+extern int full_off_flag_food ;
+extern int full_off_flag_book ;
+extern int full_off_flag_clothing ;
 
 /*打折标志，0代表不打折，1代表全场，2代表食品，以此类推*/
-int discount_flag = 0;
+extern int discount_flag;
 
 /*要删除的产品的序号*/
 /*删除该产品，例如food[delete_index].remove()*/
-int delete_index;
+extern int delete_index;
 
 /*判断一个string变量里存储的字符是否是数字字符*/
 bool judge_digits(string s);

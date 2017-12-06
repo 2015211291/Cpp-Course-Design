@@ -146,18 +146,18 @@ void Clothing::write()
 {
 	fstream f("clothing.txt", ios_base::out | ios_base::app);
 
-    f << get_ID();
-	f << get_type();
-	f << get_name();
-	f << get_num();
-	f << get_price();
-	f << get_discount();
-	f << get_discount_price();
-	f << get_description();
+    f << get_ID() << endl;
+	f << get_type() << endl;
+	f << get_name() << endl;
+	f << get_num() << endl;
+	f << get_price() << endl;
+	f << get_discount() << endl;
+	f << get_discount_price() << endl;
+	f << get_description() << endl;
 
-	f << size;
-	f << clothing_type;
-	f << material;
+	f << size << endl;
+	f << clothing_type << endl;
+	f << material << endl;
 
 	f.close();
 }
@@ -288,34 +288,7 @@ void Clothing::remove()
 /*根据原价和折扣系数以及满减修改折扣后的价格*/
 void Clothing::modify_discount_price()
 {
-
-    double price_temp = atof(get_price().c_str());
-    double discount_temp = atof(get_discount().c_str());
-    double discount_price_temp = price_temp * discount_temp;
-
-    modif_discount_price(to_string(discount_price_temp));
-
-    switch(full_off_flag)
-    {
-        // 全场满减
-        case 1:
-            // 打完折后的钱达到满减的金额
-            if(atof(get_discount_price().c_str()) >= all_full)
-                modif_discount_price(to_string(
-                    atof(get_discount_price().c_str()) - all_off));
-            break;
-
-        // 图书类满减
-        case 3:
-            // 打完折后的钱达到满减的金额
-             if(atof(get_discount_price().c_str()) >= clothing_full)
-                 modif_discount_price(to_string(atof(
-                    get_discount_price().c_str()) - clothing_off));
-             break;
-
-        default:
-            break;
-    }
+    Product::modify_discount_price();
 }
 
 
@@ -383,6 +356,75 @@ void Clothing::show()
     }
 
     cout << "原料：" << material << endl;
+    cout << "产品概述：" << get_description() << endl;
+}
+
+
+/*显示订单中商品的信息，即仅改变数量*/
+void Clothing::show_order(int n)
+{
+    Product::show_order(n);
+
+    cout << "尺码：" ;
+    switch(size)
+    {
+        case 0:
+            cout << "XXS" << endl;
+            break;
+
+        case 1:
+            cout << "XS" << endl;
+            break;
+
+        case 2:
+            cout << "S" << endl;
+            break;
+
+        case 3:
+            cout << "M" << endl;
+            break;
+
+        case 4:
+            cout << "L" << endl;
+            break;
+
+        case 5:
+            cout << "XL" << endl;
+            break;
+
+        case 6:
+            cout << "XXL" << endl;
+            break;
+
+        case 7:
+            cout << "XXXL" << endl;
+            break;
+
+        default:
+            break; 
+    }
+
+    cout << "衣服类型：" ;
+    switch(clothing_type)
+    {
+        case 0:
+            cout << "男装" << endl;
+            break;
+
+        case 1:
+            cout << "女装" << endl;
+            break;
+
+        case 2:
+            cout << "童装" << endl;
+            break;
+
+        default:
+            break;
+    }
+
+    cout << "原料：" << material << endl;
+    cout << "产品概述：" << get_description() << endl;
 }
 
 
@@ -400,6 +442,7 @@ bool Clothing::buy(int n)
     {
         modify_num(to_string(atoi(get_num().c_str()) - n));
         modify_discount_price();
+        update();
         return true;
     }
 }

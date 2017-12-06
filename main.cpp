@@ -1,11 +1,12 @@
 #include "eBussiness.h"
+using namespace std;
 
 int main()
 {
 	eBussiness eb;
 	int choosed_code;
 	int flag = 1;
-
+    
 	while(flag)
 	{
 		// 	操作选择

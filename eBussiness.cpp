@@ -56,7 +56,6 @@ eBussiness::eBussiness()
 	food_num = 0;
 	book_num = 0;
 	clothing_num = 0;
-	ID_num = 0;
 	order_num = 0;
 
 	food = new Food[Max];
@@ -71,6 +70,7 @@ eBussiness::eBussiness()
 	read_food();
 	read_book();
 	read_clothing();
+    read_ID_num();
 }
 
 
@@ -81,6 +81,7 @@ eBussiness::~eBussiness()
 	delete [] book;
 	delete [] clothing;
 	delete [] order;
+    write_ID_num();
 };
 
 
@@ -258,6 +259,9 @@ void eBussiness::log_in_user()
             cout << "0. 退出" << endl;
             cout << "1. 浏览商品" << endl;
             cout << "2. 购物" << endl;
+            cout << "3. 查看购物车" << endl;
+            cout << "4. 删除购物车中的商品" << endl;
+            cout << "5. 提交订单" << endl;
             
             cin >> choosed_code;
             
@@ -276,19 +280,38 @@ void eBussiness::log_in_user()
                     // 购物
                 case 2:
                 {
-                	cout << "请输入要购买的商品种类：";
+                	cout << "请输入要购买的商品种类：" << endl;
                 	cout << "1. 食物" << endl;
                 	cout << "2. 图书" << endl;
                 	cout << "3. 衣服" << endl;
                 	cin >> category;
                 	cout << "请输入要购买的物品的ID: " << endl;
                 	cin >> id;
-                	cout << "请输入要购买的数量： " << endl;
-                	cin >> num;
 
-                	buy(category, num, id);
+                	buy(category, id);
                     break;
                 }  
+                    
+                    //  查看购物车
+                case 3:
+                {
+                    output_order();
+                    break;
+                }
+
+                	// 删除购物车中的商品
+                case 4:
+                {
+                	remove_from_order();
+                    break;
+                }
+                    
+                   // 提交订单
+                case 5:
+                {
+                    submit_order();
+                    break;
+                }
                     
                     // 输入代码错误
                 default:
@@ -396,7 +419,9 @@ void eBussiness::log_in_admi()
     
     // 查询不到用户名
     else
-        cout << "用户不存在！" << endl;
+    {
+        cout << "用户名不存在！" << endl;
+    }
 }
 
 
@@ -419,27 +444,26 @@ void eBussiness::start_full_off()
     {
     	// 退出
     	case 0:
-    		full_off_flag = 0;
     		break;
 
     	// 全场满减
     	case 1:
-    		full_off_flag = 1;
+    		full_off_flag_all = 1;
     		break;
 
     	// 食物满减
     	case 2:
-    		full_off_flag = 2;
+    		full_off_flag_food = 2;
     		break;
 
     	// 图书满减
     	case 3:
-    		full_off_flag = 3;
+    		full_off_flag_book = 3;
     		break;
 
     	// 衣服满减
     	case 4:
-    		full_off_flag = 4;
+    		full_off_flag_clothing = 4;
     		break;
 
     	// 错误代号处理
@@ -456,38 +480,66 @@ void eBussiness::modify_commodity()
 {
 	int category, id, index;
 
-	cout << "请输入要购买的商品种类：";
+	cout << "请输入要修改的商品种类：" << endl;
+    cout << "0. 退出" << endl;
 	cout << "1. 食物" << endl;
 	cout << "2. 图书" << endl;
 	cout << "3. 衣服" << endl;
 	cin >> category;
-	cout << "请输入要修改的物品的ID: " << endl;
-	cin >> id;
 	
 	switch(category)
 	{
+        // 退出
+        case 0:
+            break;
+            
 		// 修改食物
 		case 1:
 		{
+            cout << "请输入要修改的物品的ID: " << endl;
+            cin >> id;
 			index = find_food(id);
-			food[index].alter();
-			food[index].update();
+            if(index != -1)
+            {
+                food[index].alter();
+                food[index].update();
+            }
+            else
+                cout << "没有此商品！" << endl;
+            break;
 		}
 
 		// 修改图书
 		case 2:
 		{
+            cout << "请输入要修改的物品的ID: " << endl;
+            cin >> id;
 			index = find_book(id);
-			book[index].alter();
-			book[index].update();
+            if(index != -1)
+            {
+                book[index].alter();
+                book[index].update();
+            }
+            else
+                cout << "没有此商品！" << endl;
+            break;
+
 		}
 
 		// 修改衣服
 		case 3:
 		{
+            cout << "请输入要修改的物品的ID: " << endl;
+            cin >> id;
 			index = find_clothing(id);
-			clothing[index].alter();
-			clothing[index].update();
+            if(index != -1)
+            {
+                clothing[index].alter();
+                clothing[index].update();
+            }
+            else
+                cout << "没有此商品！" << endl;
+            break;
 		}
 
 		// 错误代号处理
@@ -558,7 +610,7 @@ bool eBussiness::find_admi(string tmp, int id)
             for(int i=0; i<admi_data_num; i++)
             {
                 f_admi >> sr[i];
-                
+   
                 if((sr[i] == tmp) && (i==id))// 查到对应信息
                     flag = 1;
             }
@@ -593,10 +645,11 @@ void eBussiness::remove()
 	int id;
 
 	cout << "可删除的商品名称和数字代号如下：" << endl;
-	cout << "0. 食物" << endl;
-	cout << "1. 图书" << endl;
-	cout << "2. 服装" << endl;
-	cout << "请选择要添加的商品类型的代号" << endl;
+	cout << "1. 食物" << endl;
+	cout << "2. 图书" << endl;
+	cout << "3. 服装" << endl;
+     cout << "0. 退出" << endl;
+	cout << "请选择要删除的商品类型的代号: " << endl;
 
 	cin >> goods_code;
 
@@ -605,8 +658,12 @@ void eBussiness::remove()
 
 	switch(goods_code)
 	{
+        // 退出
+        case 0:
+            break;
+            
 		// 删除食物商品
-		case 0:
+		case 1:
 			index = find_food(id);
 			if(index != -1)
 			{
@@ -621,7 +678,7 @@ void eBussiness::remove()
 			break;
 
 		// 删除图书商品
-		case 1:
+		case 2:
 			index = find_book(id);
 			if(index != -1)
 			{
@@ -636,7 +693,7 @@ void eBussiness::remove()
 			break;
 
 		// 删除衣服商品
-		case 2:
+		case 3:
 			index = find_clothing(id);
 			if(index != -1)
 			{
@@ -660,13 +717,13 @@ void eBussiness::remove()
 
 /*读取food文件中的信息*/              							
 bool eBussiness::read_food()
-{																					
+{
 	int lines = 0;
 	int food_count = 0;
 	int temp_num;
 	string s;
 	fstream f("food.txt");
-
+    
 	if(!f)// 文件不存在
 	{
 		cout << "food文件不存在！" << endl;
@@ -681,13 +738,15 @@ bool eBussiness::read_food()
 			lines++;
 		}
 		f.close();																	
-
+        lines--;
+        
 		temp_num = lines / food_data_num;// 求出实例个数
 		if(temp_num >= current_food_max)// 实例个数大于当前数组大小，则扩展数组
 			resize_food(food);
 		food_num = temp_num;
-
-		f.open("food.txt");
+        
+        f.open("food.txt");
+        
 		while(!f.eof())
 		{
 			for(food_count=0; food_count<food_num; food_count++)
@@ -715,10 +774,13 @@ bool eBussiness::read_food()
 				f >> s;
 				food[food_count].modify_weight(s);
 			}
+            
+            if(food_count == food_num)
+                break;
 
 		}
 		f.close();
-
+      
 		return true;
 
 	}
@@ -741,13 +803,15 @@ bool eBussiness::read_book()
 	}
 	else
 	{
+        
 		// 先统计行数，从而确定book实例的个数
 		while(!f.eof())
 		{
 			f >> s;
 			lines++;
 		}
-		f.close();																	
+		f.close();
+        lines--;
 
 		temp_num = lines / book_data_num;// 求出实例个数
 		if(temp_num >= current_book_max)// 实例个数大于当前数组大小，则扩展数组
@@ -757,6 +821,7 @@ bool eBussiness::read_book()
 		f.open("book.txt");
 		while(!f.eof())
 		{
+            
 			for(book_count=0; book_count<book_num; book_count++)
 			{
 				f >> s;
@@ -782,6 +847,9 @@ bool eBussiness::read_book()
 				f >> s;
 				book[book_count].modify_title(s);
 			}
+            
+            if(book_count == book_num)
+                break;
 
 		}
 		f.close();
@@ -814,20 +882,21 @@ bool eBussiness::read_clothing()
 			f >> s;
 			lines++;
 		}
-		f.close();																	
-
+		f.close();
+        lines--;
+        
 		temp_num = lines / clothing_data_num;// 求出实例个数
 		if(temp_num >= current_clothing_max)// 实例个数大于当前数组大小，则扩展数组
 			resize_clothing(clothing);
 		clothing_num = temp_num;
-
+        
 		f.open("clothing.txt");
 		while(!f.eof())
 		{
 			for(clothing_count=0; clothing_count<clothing_num; clothing_count++)
 			{
 				f >> s;
-				clothing[clothing_count].modify_type(atoi(s.c_str()));
+				clothing[clothing_count].modify_ID(atoi(s.c_str()));
 				f >> s;
 				clothing[clothing_count].modify_type(Type(atoi(s.c_str())));
 				f >> s;
@@ -850,6 +919,9 @@ bool eBussiness::read_clothing()
 				f >> s;
 				clothing[clothing_count].modify_material(s);
 			}
+            
+            if(clothing_count == clothing_num)
+                break;
 
 		}
 		f.close();
@@ -867,9 +939,10 @@ void eBussiness::add()
 	int flag = 1;
 
 	cout << "可添加的商品名称和数字代号如下：" << endl;
-	cout << "0. 食物" << endl;
-	cout << "1. 图书" << endl;
-	cout << "2. 服装" << endl;
+	cout << "1. 食物" << endl;
+	cout << "2. 图书" << endl;
+	cout << "3. 服装" << endl;
+    cout << "0. 退出" << endl;
 	cout << "请选择要添加的商品类型的代号" << endl;
 
 	while(flag)
@@ -877,8 +950,12 @@ void eBussiness::add()
 		cin >> goods_code;
 		switch(goods_code)
 		{
+            // 退出
+            case 0:
+                break;
+                
 			// 添加食物商品
-			case 0:
+			case 1:
 				if((food_num+1) >= current_food_max )
 					resize_food(food);
 				food[food_num++].add_food(ID_num++);
@@ -886,7 +963,7 @@ void eBussiness::add()
 				break;
 
 			// 添加图书商品
-			case 1:
+			case 2:
 				if((book_num+1) >= current_book_max == 0)
 					resize_book(book);
 				book[book_num++].add_book(ID_num++);
@@ -894,7 +971,7 @@ void eBussiness::add()
 				break;
 
 			// 添加衣服商品
-			case 2:
+			case 3:
 				if((clothing_num+1) >= current_clothing_max == 0)
 					resize_clothing(clothing);
 				clothing[clothing_num++].add_clothing(ID_num++);
@@ -913,39 +990,48 @@ void eBussiness::add()
 /*显示所有食物商品*/
 void eBussiness::show_food()
 {
-	cout << "所有食物商品如下：";
-	for(int i=0; i<food_num; i++)
-	{
-		cout << i << "." << endl;
-		food[i].show();
-		cout << endl << endl;
-	}
+    if(food_num > 0)
+    {
+        cout << "所有食物商品如下：" << endl;
+        for(int i=0; i<food_num; i++)
+        {
+            cout << i << "." << endl;
+            food[i].show();
+            cout << endl << endl;
+        }
+    }
 }
 
 
 /*显示所有图书商品*/
 void eBussiness::show_book()
 {
-	cout << "所有图书商品如下：";
-	for(int i=0; i<book_num; i++)
-	{
-		cout << i << "." << endl;
-		book[i].show();
-		cout << endl << endl;
-	}
+    if(book_num > 0)
+    {
+        cout << "所有图书商品如下：" << endl;
+        for(int i=0; i<book_num; i++)
+        {
+            cout << i << "." << endl;
+            book[i].show();
+            cout << endl << endl;
+        }
+    }
 }
 
 
 /*显示所有衣服商品*/
 void eBussiness::show_clothing()
 {
-	cout << "所有衣服商品如下：";
-	for(int i=0; i<clothing_num; i++)
-	{
-		cout << i << "." << endl;
-		clothing[i].show();
-		cout << endl << endl;
-	}
+    if(clothing_num > 0)
+    {
+        cout << "所有衣服商品如下：" << endl;
+        for(int i=0; i<clothing_num; i++)
+        {
+            cout << i << "." << endl;
+            clothing[i].show();
+            cout << endl << endl;
+        }
+    }
 }
 
 
@@ -962,8 +1048,10 @@ void eBussiness::show()
 int eBussiness::find_food(int id)
 {
 	for(int i=0; i<food_num; i++)
+	{
 		if(food[i].get_ID() == id)
 			return i;
+	}
 
 	return -1;
 }
@@ -995,10 +1083,11 @@ int eBussiness::find_clothing(int id)
 /*i=1,购买food;i=2,购买book;i=3,购买clothing*/
 /*id表示具体商品的唯一标识*/
 /*n表示购买数目*/
-void eBussiness::buy(int i, int n, int id)
+void eBussiness::buy(int i,  int id)
 {
 	int index;
-
+    int n;
+    
 	switch(i)
 	{
 		// 购买食物
@@ -1009,13 +1098,12 @@ void eBussiness::buy(int i, int n, int id)
 				cout << "没有此商品！" << endl;
 			else
 			{
+                cout << "请输入要购买的数量： " << endl;
+                cin >> n;
 				if(food[index].buy(n))// 当库存量支撑此次购买时,加入订单
 				{
-					order[order_num].category = 1;
-					order[order_num].ID = id;
-					order[order_num].num = n;
-					order[order_num++].price = 
-					n * atoi(food[index].get_discount_price().c_str());
+					add_to_order(0, id, n, 
+                                 n * atoi(food[index].get_discount_price().c_str()));
 					cout << "已添加至购物车！" << endl;
 				}
 			}
@@ -1029,13 +1117,12 @@ void eBussiness::buy(int i, int n, int id)
 				cout << "没有此商品！" << endl;
 			else
 			{
+                cout << "请输入要购买的数量： " << endl;
+                cin >> n;
 				if(book[index].buy(n))// 当库存量支撑此次购买时,加入订单
 				{
-					order[order_num].category = 2;
-					order[order_num].ID = id;
-					order[order_num].num = n;
-					order[order_num++].price = 
-					n * atoi(book[index].get_discount_price().c_str());
+					add_to_order(1, id, n, 
+						n * atoi(book[index].get_discount_price().c_str()));
 					cout << "已添加至购物车！" << endl;
 				}
 			}
@@ -1050,13 +1137,12 @@ void eBussiness::buy(int i, int n, int id)
 				cout << "没有此商品！" << endl;
 			else
 			{
+                cout << "请输入要购买的数量： " << endl;
+                cin >> n;
 				if(clothing[index].buy(n))// 当库存量支撑此次购买时,加入订单
 				{
-					order[order_num].category = 3;
-					order[order_num].ID = id;
-					order[order_num].num = n;
-					order[order_num++].price = 
-					n * atoi(clothing[index].get_discount_price().c_str());
+					add_to_order(2, id, n, 
+						n * atoi(clothing[index].get_discount_price().c_str()));
 					cout << "已添加至购物车！" << endl;
 				}
 			}
@@ -1068,4 +1154,282 @@ void eBussiness::buy(int i, int n, int id)
 			cout << "输入了不合法的代号！" << endl;
 			break;
 	}
+}
+
+
+/*将当前ID_num写入文件*/
+void eBussiness::write_ID_num()
+{
+	// 向文件中覆盖写入信息
+    ofstream f("ID_num.txt", ios_base::trunc);
+
+	f << ID_num;
+	f.close();
+}
+
+
+/*读取ID_num*/
+void eBussiness::read_ID_num()
+{
+	fstream f("ID_num.txt");
+
+	f >> ID_num;
+	f.close();
+}
+
+
+/*提交订单*/
+void eBussiness::submit_order()
+{
+	double all_price;
+
+	if(order_num == 0)// 订单中还没有商品
+		cout << "您还没有向购物车加入商品！" << endl;
+	else
+	{
+		output_order();// 输出订单
+
+		// 计算总价
+		all_price = cal_all_price();
+		cout << "您应付的总金额：" << all_price << endl;
+	}
+
+}
+
+
+/*计算订单中商品的总价，考虑满减*/
+double eBussiness::cal_all_price()
+{
+	double all_price = 0;
+	double food_price = 0;
+	double book_price = 0;
+	double clothing_price = 0;
+
+	for(int i=0; i<order_num; i++)
+	{
+		switch(order[i].category)
+		{
+			// 食物
+			case 0:
+				food_price += order[i].price;
+				break;
+
+			// 图书
+			case 1:
+				book_price += order[i].price;
+				break;
+
+			// 衣服
+			case 2:
+				clothing_price += order[i].price;
+				break;
+
+			default:
+				break;
+		}
+	}
+
+
+	// 满减规则
+	// 打折后的商品总价满足某类商品则满减
+	// 若还有全场满减，则各类商品满减后的总价参与全场满减
+	
+	// 食物满减
+	if(full_off_flag_food && (food_price>food_full))
+		food_price -= food_off;
+
+	// 图书满减
+	if(full_off_flag_book && (book_price>book_full))
+		book_price -= book_off;
+
+	// 衣服满减
+	if(full_off_flag_clothing && (clothing_price>clothing_full))
+		clothing_price -= clothing_off;
+	
+	// 全场满减
+	all_price = food_price + book_price + clothing_price;
+	if(full_off_flag_all && (all_price>all_full))
+		all_price -= all_off;
+
+	return all_price;
+}
+
+
+/*输出订单*/
+void eBussiness::output_order()
+{
+	int index;
+    
+    if(order_num == 0)
+    	cout << "您的购物车是空的！" << endl;
+    else
+    {
+		cout << "您的订单如下： " << endl;
+		for(int i=0; i<order_num; i++)
+		{
+			switch(order[i].category)
+			{
+				// 食品类
+				case 0:
+					cout << "类别： 食品" << endl;
+					index = find_food(order[i].ID);
+					food[index].show_order(order[i].num);
+					break;
+
+				// 图书类
+				case 1:
+					cout << "类别： 图书" << endl;
+					index = find_book(order[i].ID);
+					book[index].show_order(order[i].num);
+					break;
+
+				// 衣服类
+				case 2:
+					cout << "类别： 衣服" << endl;
+					index = find_clothing(order[i].ID);
+					clothing[index].show_order(order[i].num);
+					break;
+
+				default:
+					break;
+			}
+		}
+	}
+
+}
+
+
+/*将商品加入订单*/
+/*类别，ID, 数量，总价*/
+/*有查重合并功能*/
+void eBussiness::add_to_order(int category, int id, int num, int price)
+{
+	int flag = 1;// 标识这个商品之前有没有添加到订单中
+
+	// 先查重
+	// 之前有重复的，则修改数量和总价
+	for(int i=0; i<order_num; i++)
+		if(order[i].ID == id)
+		{
+			flag = 0;
+			order[i].num += num;
+			order[i].price += price;
+		}
+
+	// 如果之前没重复的，创建新的订单
+	if(flag)
+	{
+		order[order_num].category = category;
+		order[order_num].ID = id;
+		order[order_num].num = num;
+		order[order_num].price = price;
+		order_num++;
+	}
+
+}
+
+
+ /*删除购物车的商品*/
+void eBussiness::remove_from_order()
+{
+	int id, num;
+	int index = -1;
+	int flag = 0;
+    int temp_num;
+
+	cout << "请输入要删除的商品的ID: " << endl;
+	cin >> id;
+
+	for(int i=0; i<order_num; i++)
+	{
+		if(id == order[i].ID)
+		{
+			flag = 1;
+			cout << "请输入删除的数量：" << endl;
+			cin >> num;
+
+			if(num > order[i].num)
+			{
+				cout << "数量输入错误！购物车中该商品仅有" << order[i].num << "件！" << endl;			
+			}
+			else
+			{
+				// 更改订单中的商品数量信息
+				order[i].num -= num;
+			
+				// 更改类及文件中的商品数量信息
+				switch(order[i].category)
+				{
+					// 食物
+					case 0:
+					{
+						index = find_food(order[i].ID);
+                        temp_num = atoi(food[index].get_num().c_str()) + num;
+						food[index].modify_num(to_string(temp_num));
+						food[index].update();
+						break;
+					}
+
+					// 图书
+					case 1:
+					{
+						index = find_book(order[i].ID);
+                        temp_num = atoi(food[index].get_num().c_str()) + num;
+						book[index].modify_num(to_string(temp_num));
+						book[index].update();
+						break;
+					}
+
+					// 衣服
+					case 2:
+					{
+						index = find_clothing(order[i].ID);
+                        temp_num = atoi(food[index].get_num().c_str()) + num;
+						clothing[index].modify_num(to_string(temp_num));
+						clothing[index].update();
+						break;
+					}
+
+					default:
+						break;
+
+				}
+
+				if(order[i].num == 0)
+					update_order();
+
+				cout << "删除成功！" << endl;
+			}
+
+			break;
+		}
+	}
+
+	if(!flag)
+		cout << "购物车中没有该商品！" << endl;
+}
+
+
+/*更新购物车，即删去数量为0的商品*/
+void eBussiness::update_order()
+{
+	Order* temp = new Order[order_num];
+	int j=0, temp_num = order_num;
+
+	for(int i=0; i<order_num; i++)
+	{
+		if(order[i].num != 0)
+		{
+			temp[j].category = order[i].category;
+			temp[j].ID = order[i].ID;
+			temp[j].num = order[i].num;
+			temp[j].price = order[i].price;
+			j++;
+		}
+		else
+			temp_num--;
+	}
+
+	order = temp;
+	order_num = temp_num;
 }

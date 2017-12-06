@@ -142,18 +142,18 @@ void Food::write()
 {
 	fstream f("food.txt", ios_base::out | ios_base::app);
 
-    f << get_ID();
-	f << get_type();
-	f << get_name();
-	f << get_num();
-	f << get_price();
-	f << get_discount();
-	f << get_discount_price();
-	f << get_description();
+    f << get_ID() << endl;
+	f << get_type() << endl;
+	f << get_name() << endl;
+	f << get_num() << endl;
+	f << get_price() << endl;
+	f << get_discount() << endl;
+	f << get_discount_price() << endl;
+	f << get_description() << endl;
 
-	f << production_date;
-	f << quality_period;
-	f << weight;
+	f << production_date << endl;
+	f << quality_period << endl;
+	f << weight << endl;
 
 	f.close();
 }
@@ -285,33 +285,7 @@ void Food::remove()
 void Food::modify_discount_price()
 {
 
-    double price_temp = atof(get_price().c_str());
-    double discount_temp = atof(get_discount().c_str());
-    double discount_price_temp = price_temp * discount_temp;
-
-    modif_discount_price(to_string(discount_price_temp));
-
-    switch(full_off_flag)
-    {
-        // 全场满减
-        case 1:
-            // 打完折后的钱达到满减的金额
-            if(atof(get_discount_price().c_str()) >= all_full)
-                modif_discount_price(to_string(
-                    atof(get_discount_price().c_str()) - all_off));
-            break;
-
-        // 食物类满减
-        case 2:
-            // 打完折后的钱达到满减的金额
-             if(atof(get_discount_price().c_str()) >= food_full)
-                 modif_discount_price(to_string(atof(
-                    get_discount_price().c_str()) - food_off));
-             break;
-
-        default:
-            break;
-    }
+    Product::modify_discount_price();
 }
 
 
@@ -321,7 +295,19 @@ void Food::show()
     Product::show();
 
     cout << "生产日期：" << production_date << endl;
-    cout << "保质期" << quality_period <<" (天)" << endl;
+    cout << "保质期: " << quality_period <<" (天)" << endl;
+    cout << "净含量：" << weight << " 克" << endl;
+    cout << "产品概述：" << get_description() << endl;
+}
+
+
+/*显示订单中商品的信息，即仅改变数量*/
+void Food::show_order(int n)
+{
+    Product::show_order(n);
+    
+    cout << "生产日期：" << production_date << endl;
+    cout << "保质期: " << quality_period <<" (天)" << endl;
     cout << "净含量：" << weight << " 克" << endl;
     cout << "产品概述：" << get_description() << endl;
 }
@@ -341,6 +327,7 @@ bool Food::buy(int n)
     {
         modify_num(to_string(atoi(get_num().c_str()) - n));
         modify_discount_price();
+        update();
         return true;
     }
 }

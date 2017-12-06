@@ -128,18 +128,18 @@ void Book::write()
 {
 	fstream f("book.txt", ios_base::out | ios_base::app);
 
-    f << get_ID();
-	f << get_type();
-	f << get_name();
-	f << get_num();
-	f << get_price();
-	f << get_discount();
-	f << get_discount_price();
-	f << get_description();
+    f << get_ID() << endl;
+	f << get_type() << endl;
+	f << get_name() << endl;
+	f << get_num() << endl;
+	f << get_price() << endl;
+	f << get_discount() << endl;
+	f << get_discount_price() << endl;
+	f << get_description() << endl;
 
-	f << publication_date;
-	f << author;
-	f << press;
+	f << publication_date << endl;
+	f << author << endl;
+	f << press << endl;
 
 	f.close();
 }
@@ -271,33 +271,7 @@ void Book::remove()
 void Book::modify_discount_price()
 {
 
-    double price_temp = atof(get_price().c_str());
-    double discount_temp = atof(get_discount().c_str());
-    double discount_price_temp = price_temp * discount_temp;
-
-    modif_discount_price(to_string(discount_price_temp));
-
-    switch(full_off_flag)
-    {
-        // 全场满减
-        case 1:
-            // 打完折后的钱达到满减的金额
-            if(atof(get_discount_price().c_str()) >= all_full)
-                modif_discount_price(to_string(
-                    atof(get_discount_price().c_str()) - all_off));
-            break;
-
-        // 图书类满减
-        case 3:
-            // 打完折后的钱达到满减的金额
-             if(atof(get_discount_price().c_str()) >= book_full)
-                 modif_discount_price(to_string(atof(
-                    get_discount_price().c_str()) - book_off));
-             break;
-
-        default:
-            break;
-    }
+    Product::modify_discount_price();
 }
 
 
@@ -305,6 +279,18 @@ void Book::modify_discount_price()
 void Book::show()
 {
     Product::show();
+
+    cout << "出版日期：" << publication_date << endl;
+    cout << "作者：" << author << endl;
+    cout << "出版社：" << press << endl;
+    cout << "产品概述：" << get_description() << endl;
+}
+
+
+ /*显示订单中商品的信息，即仅改变数量*/
+void Book::show_order(int n)
+{
+    Product::show_order(n);
 
     cout << "出版日期：" << publication_date << endl;
     cout << "作者：" << author << endl;
@@ -327,6 +313,7 @@ bool Book::buy(int n)
     {
         modify_num(to_string(atoi(get_num().c_str()) - n));
         modify_discount_price();
+        update();
         return true;
     }
 }

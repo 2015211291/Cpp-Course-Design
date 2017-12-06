@@ -88,7 +88,7 @@ public:
     /*购买*/
     /*i=1,购买food;i=2,购买book;i=3,购买clothing*/
     /*index表示具体产品在数组中的索引*/
-    void buy(int i, int n, int id);
+    void buy(int i, int id);
 
     /*寻找id对应的food，并返回索引,找不到返回-1*/
     int find_food(int id);
@@ -101,6 +101,33 @@ public:
 
     /*开启满减活动*/
     void start_full_off();
+    
+    /*将当前ID_num写入文件*/
+    void write_ID_num();
+
+    /*读取ID_num*/
+    void read_ID_num();
+
+    /*提交订单*/
+    void submit_order();
+
+    /*输出订单*/
+    void output_order();
+
+    /*将商品加入订单*/
+    /*类别，ID, 数量，总价*/
+    /*有查重合并功能*/
+    void add_to_order(int category, int id, int num, int price);
+
+    /*计算订单中商品的总价，考虑满减*/
+    double cal_all_price();
+
+    /*删除购物车的商品*/
+    void remove_from_order();
+
+    /*更新购物车，即删去数量为0的商品*/
+    void update_order();
+ 
 };
 
 #endif

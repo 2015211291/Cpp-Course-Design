@@ -63,6 +63,9 @@ public:
 
 	/*显示商品信息*/
     virtual void show();
+
+    /*显示订单中商品的信息，即仅改变数量*/
+    virtual void show_order(int n);
 };
 
 #endif
