@@ -8,66 +8,6 @@ int record_num = 0;
 string* record_s;
 int current_record_Max = Max;
 
-///*主函数*/
-//int main()
-//{
-//    int choosed_code = -1;
-//
-    
-//    if(!bank[0].empty())
-//    {
-//        /*选择操作*/
-//        while(choosed_code != 0)
-//        {
-//            cout << "请选择您的操作:" << endl;
-//            cout << "0. 退出" << endl;
-//            cout << "1. 登录" << endl;
-//            cout << "2. 注册" << endl;
-            
-//            cin >> choosed_code;
-            
-//            switch(choosed_code)
-//            {
-//                    // 退出
-//                case 0:
-//                    cout << "您已成功退出系统，感谢您的使用！" << endl;
-//                    break;
-                    
-//                    // 登录
-//                case 1:
-//                    bank_card.log_in();
-//                    break;
-                    
-//                    // 注册
-//                case 2:
-//                    bank_card.enroll();
-//                    break;
-                    
-//                    // 错误处理
-//                default:
-//                    cout << "请输入正确的数字代号!" << endl;
-//                    break;
-//            }
-//        }
-//    }
-    
-//    else// 文件不存在
-//    {
-//        cout << "文件不存在！" << endl;
-//        cout << "请输入0来退出:" ;
-//        cin >> choosed_code;
-//    }
-    
-//    f_bank.close();
-    
-    
-//    system("pause");
-    
-//    return 0;
-    
-//}
-
-
 
 /*函数定义*/
 /*构造函数*/
