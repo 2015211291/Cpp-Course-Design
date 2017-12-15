@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BookShowDialog</class>
+ <widget class="QDialog" name="BookShowDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>795</width>
+    <height>447</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QTableWidget" name="tableWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>771</width>
+     <height>381</height>
+    </rect>
+   </property>
+   <row>
+    <property name="text">
+     <string/>
+    </property>
+   </row>
+   <column>
+    <property name="text">
+     <string/>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>产品ID</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>类别</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>名称</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>数量(本)</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>原价(元)</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>现价(元)</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>产品描述</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>出版日期</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>作者</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>出版社</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>410</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>PointingHandCursor</cursorShape>
+   </property>
+   <property name="text">
+    <string>返回</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
